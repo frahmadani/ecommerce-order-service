@@ -78,6 +78,21 @@ class OrderService {
         }
     }
 
+    async CancelTxOrder(txId, channel) {
+        let result = {}
+        try {
+            const order = await this.repository.GetOrderByTxId(txId)
+            order.channel = channel
+            order.status = 'canceled'
+            order.save()
+            return order
+        } catch(e) {
+            console.log(e)
+            result.err = e
+        }
+        return result
+    }
+
     // Subscribe Event tidak digunakan lagi, diganti dgn call dari observer kafka ke masing2 service
     async SubscribeEvents(topic, value) {
 

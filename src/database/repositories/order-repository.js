@@ -1,6 +1,7 @@
 const { Order, Cart } = require('../models');
 const { v4: uuidv4 } = require('uuid');
 const { APIError } = require('../../utils/app-errors');
+const { default: mongoose } = require('mongoose');
 
 class OrderRepository {
 
@@ -94,7 +95,7 @@ class OrderRepository {
 
                 if (cartItems.length > 0) {
 
-                    cartItems.map(item => {
+                    cartItems.forEach(item => {
 
                         if (item.product._id.toString() === productId.toString()) {
                             cartItems.splice(cartItems.indexOf(item), 1);
@@ -134,11 +135,11 @@ class OrderRepository {
 
                 if (cartItems.length > 0) {
                     //start process order
-                    cartItems.map(item => {
+                    cartItems.forEach(item => {
                         amount += parseInt(item.product.price) * parseInt(item.unit);
                     });
 
-                    const orderId = uuidv4();
+                    const orderId = (new mongoose.Types.ObjectId).toHexString()
 
                     const order = new Order({
                         orderId,
@@ -167,6 +168,15 @@ class OrderRepository {
             
         } catch (error) {
             throw new APIError('API Error', 500, 'Unable to create order');
+        }
+    }
+
+    async GetOrderByTxId(txId, channel) {
+        try {
+            return await Order.findOne({ transactionId: txId })
+        } catch(e) {
+            console.log(e)
+            throw new APIError("Get Order By Tx Id", 500, e)
         }
     }
 }
