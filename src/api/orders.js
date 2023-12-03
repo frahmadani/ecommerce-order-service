@@ -42,11 +42,11 @@ module.exports = (app) => {
             }
 
             logger.info('Success creating order');
-            return res.status(200).json(data); // --> sementara di comment
+            return res.status(200).json({status: 'success', message: 'Success creating order', data: data }); // --> sementara di comment
 
         } catch (error) {
             logger.error(`Failed creating order: ${error}`);
-            return res.status(500).json(error);
+            return res.status(500).json({ status: 'error', message: 'Failed creating order' });
         }
     });
 
@@ -60,11 +60,11 @@ module.exports = (app) => {
             const { data } = await service.getOrders(_id);
 
             logger.info('Success retrieving orders');
-            return res.status(200).json(data);
+            return res.status(200).json({status: 'success', message: 'Success retrieving order', data});
 
         } catch (error) {
             logger.error(`Failed retrieving orders: ${error}`);
-            return res.status(500).json(error);
+            return res.status(500).json({status: 'error', message: 'Failed retrieveing error'});
         }
     });
 
@@ -77,11 +77,11 @@ module.exports = (app) => {
             const { data } = await service.getCart({ _id });
 
             logger.info('Success retrieving cart');
-            return res.status(200).json(data);
+            return res.status(200).json({ status: 'success', message: 'Success retrieving cart', data});
 
         } catch (error) {
             logger.error(`Failed retrieving cart: ${error}`);
-            return res.status(500).json(error);
+            return res.status(500).json({ status: 'error', message: 'Failed retrieving cart'});
         }
         
     });
