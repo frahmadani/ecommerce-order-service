@@ -1,5 +1,6 @@
 const kafkaConsumer = require('../../utils/kafka/kafka_consumer');
 const Order = require('../../services/order-service');
+const logger = require('../../utils/app-logger');
 
 const order = new Order();
 
