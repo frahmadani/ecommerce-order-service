@@ -15,6 +15,7 @@ const addToCart = async () => {
         try {
 
             console.log('Data diterima: ', message);
+            logger.info(`${ctx} - Data received by Order service - Add To Cart Event`)
 
             const parsedMessage = JSON.parse(message.value);
 
@@ -24,15 +25,18 @@ const addToCart = async () => {
 
             if (result.err) {
                 // logger.log(ctx, result.err, 'Data not commit Kafka');
+                logger.error(`${ctx} - Data not committed to Kafka`);
             } else {
                 consumer.commit(true, async (err, data) => {
                     if (err) {
                         // logger.log(ctx, err, 'Data not commit Kafka');
                     }
                     //   logger.log(ctx, data, 'Data Commit Kafka');
+                    logger.info(`${ctx} - Data committed to Kafka`);
                 });
             }
         } catch (error) {
+            logger.error(`${ctx} - Data not committed to Kafka`);
             //   logger.log(ctx, error, 'Data error');
         }
     });
@@ -52,6 +56,7 @@ const removeFromCart = async () => {
         try {
 
             console.log('Data diterima: ', message);
+            logger.info(`${ctx} - Data received by Order service - Remove From Cart Event`)
 
             const parsedMessage = JSON.parse(message.value);
 
@@ -64,16 +69,20 @@ const removeFromCart = async () => {
 
             if (result.err) {
                 // logger.log(ctx, result.err, 'Data not commit Kafka');
+                logger.error(`${ctx} - Data not committed to Kafka`);
             } else {
                 consumer.commit(true, async (err, data) => {
                     if (err) {
                         // logger.log(ctx, err, 'Data not commit Kafka');
+                        logger.error(`${ctx} - Data not committed to Kafka`);
                     }
                     //   logger.log(ctx, data, 'Data Commit Kafka');
+                    logger.info(`${ctx} - Data committed to Kafka`);
                 });
             }
         } catch (error) {
             //   logger.log(ctx, error, 'Data error');
+            logger.error(`${ctx} - Data not committed to Kafka`);
         }
     });
 
