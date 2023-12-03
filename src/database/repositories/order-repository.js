@@ -146,7 +146,7 @@ class OrderRepository {
                         userId,
                         amount,
                         transactionId,
-                        status: 'received',
+                        status: 'waiting_for_payment',
                         items: cartItems
                     });
 

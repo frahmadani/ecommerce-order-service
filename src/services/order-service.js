@@ -1,6 +1,7 @@
 const { OrderRepository } = require('../database');
 const { formattedData } = require('../utils');
 const { APIError } = require('../utils/app-errors');
+const kafkaProducer = require("../utils/kafka/kafka_producer")
 
 class OrderService {
 
@@ -78,19 +79,56 @@ class OrderService {
         }
     }
 
-    async CancelTxOrder(txId, channel) {
-        let result = {}
-        try {
-            const order = await this.repository.GetOrderByTxId(txId)
-            order.channel = channel
-            order.status = 'canceled'
-            order.save()
-            return order
-        } catch(e) {
-            console.log(e)
-            result.err = e
+    async cancelOrPayOrder(status) {
+        return async(txId, channel) => {
+            let result = {}
+            try {
+                const order = await this.repository.GetOrderByTxId(txId)
+                order.channel = channel
+                order.status = status
+                order.save()
+                return order
+            } catch(e) {
+                console.log(e)
+                result.err = e
+            }
+            return result
         }
-        return result
+    }
+
+    async CancelTxOrder(txId, channel) {
+        try {
+            const f = await this.cancelOrPayOrder("canceled")
+            const order = await f(txId, channel)
+            let payload = {
+                data: {
+                    items: order.items.map(item => {
+                        return {
+                            id: item?.product?._id,
+                            unit: item?.unit
+                        }
+                    })
+                }
+            }
+            const data2kafka = {
+                topic: 'ecommerce-service-revert-stock',
+                body: { payload: payload },
+                // body: payload,
+                partition: 1,
+                attributes: 1
+            };
+            console.log("data2kafka cancel order:", data2kafka)
+            kafkaProducer.send(data2kafka)
+            return order
+        } catch (e) {
+            console.log(e)
+            return { err: e }
+        }
+    }
+
+    async PayTxOrder(txId, channel) {
+        const f = await this.cancelOrPayOrder('paid')
+        return await f(txId, channel)
     }
 
     // Subscribe Event tidak digunakan lagi, diganti dgn call dari observer kafka ke masing2 service

@@ -7,6 +7,7 @@ const initEventListener = () => {
     orderEventHandler.addToCart();
     orderEventHandler.removeFromCart();
     orderEventHandler.cancelTxOrder();
+    orderEventHandler.payTxOrder();
 };
 
 module.exports = {
