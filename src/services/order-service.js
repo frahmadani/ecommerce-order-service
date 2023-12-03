@@ -4,8 +4,12 @@ const { APIError } = require('../utils/app-errors');
 
 class OrderService {
 
-    constructor() {
-        this.repository = new OrderRepository();
+    constructor(orderRepo) {
+        if (orderRepo) {
+            this.repository = orderRepo;
+        } else {
+            this.repository = new OrderRepository();
+        }
     }
 
     async getCart({ _id }) {
