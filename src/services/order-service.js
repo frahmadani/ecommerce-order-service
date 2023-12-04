@@ -80,10 +80,14 @@ class OrderService {
     }
 
     async cancelOrPayOrder(status) {
+        const repo = this.repository
         return async(txId, channel) => {
             let result = {}
             try {
-                const order = await this.repository.GetOrderByTxId(txId)
+                const order = await repo.GetOrderByTxId(txId)
+                if (!order) {
+                    throw new APIError(`${status}Order not found`, 400, "Not found")
+                }
                 order.channel = channel
                 order.status = status
                 order.save()

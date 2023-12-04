@@ -131,7 +131,7 @@ const cancelTxOrder = async () => {
 
 const payTxOrder = async () => {
     const dataConsumer = {
-        topic: 'ecommerce-service-cancel-transaction',
+        topic: 'ecommerce-service-pay-transaction',
         groupId: 'ecommerce-order-service'
     };
 
@@ -143,7 +143,7 @@ const payTxOrder = async () => {
             console.log('Data diterima: ', message);
 
             const parsedMessage = JSON.parse(message.value);
-            const { userId, transactionId, channel } = parsedMessage?.payload?.data || {}
+            const { userId, transactionId, channel } = parsedMessage?.data || {}
 
             const result = await order.PayTxOrder(transactionId, channel)
 

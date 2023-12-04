@@ -41,12 +41,15 @@ module.exports = (app) => {
                 data.transactionId = transactionId
             }
 
-            logger.info('Success creating order');
-            return res.status(200).json({status: 'success', message: 'Success creating order', data: data }); // --> sementara di comment
+            return res.status(200).json({
+                status: "success", message: "success",
+                data,
+            });
 
         } catch (error) {
-            logger.error(`Failed creating order: ${error}`);
-            return res.status(500).json({ status: 'error', message: 'Failed creating order' });
+            return res.status(500).json({
+                status: "error", message: error
+            });
         }
     });
 
@@ -59,12 +62,15 @@ module.exports = (app) => {
 
             const { data } = await service.getOrders(_id);
 
-            logger.info('Success retrieving orders');
-            return res.status(200).json({status: 'success', message: 'Success retrieving order', data});
+            return res.status(200).json({
+                status: "success", message: "success",
+                data
+            });
 
         } catch (error) {
-            logger.error(`Failed retrieving orders: ${error}`);
-            return res.status(500).json({status: 'error', message: 'Failed retrieveing error'});
+            return res.status(500).json({
+                status: "error", message: error
+            });
         }
     });
 
@@ -76,12 +82,15 @@ module.exports = (app) => {
         try {
             const { data } = await service.getCart({ _id });
 
-            logger.info('Success retrieving cart');
-            return res.status(200).json({ status: 'success', message: 'Success retrieving cart', data});
+            return res.status(200).json({
+                status: "success", message: "success",
+                data,
+            });
 
         } catch (error) {
-            logger.error(`Failed retrieving cart: ${error}`);
-            return res.status(500).json({ status: 'error', message: 'Failed retrieving cart'});
+            return res.status(500).json({
+                status: "error", message: error
+            });
         }
         
     });
